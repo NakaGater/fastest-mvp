@@ -1,6 +1,6 @@
 {
   "name": "fastest-mvp",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Talk about an idea; the plugin drives spec, design, implementation, testing, and deployment autonomously. Combines Superpowers-style skill chaining, gstack-style role thinking and browser QA, ECC-style search-first research and security scanning, and Heartbeat-style agent handoffs.",
   "author": {
     "name": "fastest-mvp"

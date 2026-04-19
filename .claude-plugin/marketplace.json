@@ -8,7 +8,7 @@
       "name": "fastest-mvp",
       "source": "./",
       "description": "Autonomous web-app development plugin: idea -> PRD -> design -> implementation -> tested PR.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "category": "development",
       "tags": [
         "web-app",

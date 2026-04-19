@@ -9,13 +9,13 @@ Human: "I want to build ___"
   |
   v
 Phase 1: Discovery (human-driven)
-  discovery-dialogue -> [ceo-challenge] -> [user-story-generation] -> prd-generation
+  discovery-dialogue -> ceo-challenge -> user-story-generation -> prd-generation
   [GATE 1: human approves PRD]
   |
   v
 Phase 2: Design (mostly autonomous)
-  [search-first] -> [tech-selection] -> [architecture-design] -> [design-system]
-    -> planning -> [gan-design] -> [design-playground]
+  search-first -> tech-selection -> architecture-design -> design-system
+    -> planning -> gan-design -> design-playground
   [GATE 3: human approves design]
   |
   v
@@ -32,10 +32,9 @@ Phase 5: Ship (fully autonomous)
   [shipping]
 ```
 
-Skills in `[brackets]` are later-version additions. As of v0.2 the
-plugin ships with: getting-started, discovery-dialogue, prd-generation,
-planning, subagent-development, tdd, progress-dashboard, design-system,
-gan-design, design-playground.
+Skills in `[brackets]` are later-version additions. As of v0.3 the
+plugin ships with the full Discovery and Design phases plus the Build
+loop. Verify and Ship are scheduled for v0.4.
 
 ## Gates
 
@@ -137,14 +136,10 @@ after one retry, it surfaces the problem rather than spinning.
 
 ## Known omissions (scheduled for later versions)
 
-- No search-first / tech-selection — design proceeds with whatever the
-  user specifies in the PRD's technical constraints section.
-- No architecture-design — structure derived from PRD + plan directly.
-- No automated security-scan / browser-qa — reviewers catch most of
-  this in the quality review stage.
-- No shipping skill — final PR creation is manual.
-
-Each of these is scheduled for a later version per the plan in the
-design document. v0.2 added the Design Quality skills
-(`design-system`, `gan-design`, `design-playground`) which produce
-visual mocks and Gate 3 approval before Build begins.
+- No automated security-scan — reviewers catch most security concerns
+  in the quality review stage; a dedicated skill comes in v0.4.
+- No browser-qa — manually open the app in a browser after Build; the
+  Playwright-driven QA skill comes in v0.4.
+- No shipping skill — final PR creation and docs generation are
+  manual; a skill automating this comes in v0.4.
+- No systematic-debugging / learnings / Heartbeat integration — v0.5.

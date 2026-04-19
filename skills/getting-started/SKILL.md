@@ -49,15 +49,15 @@ the conversation.
 ```
 Phase 1 - Discovery (human-driven)
   discovery-dialogue
-    -> ceo-challenge             [v0.3+]
-    -> user-story-generation     [v0.3+]
+    -> ceo-challenge
+    -> user-story-generation
     -> prd-generation
     -> [GATE 1: human approves PRD]
 
 Phase 2 - Design (mostly autonomous)
-    -> search-first              [v0.3+]
-    -> tech-selection            [v0.3+, GATE 2 for engineers]
-    -> architecture-design       [v0.3+]
+    -> search-first
+    -> tech-selection            [GATE 2 for engineers]
+    -> architecture-design
     -> design-system
     -> planning
     -> gan-design

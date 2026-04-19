@@ -25,16 +25,17 @@ Phase 3: Build (fully autonomous)
   |
   v
 Phase 4: Verify (fully autonomous)
-  [security-scan] -> [browser-qa]
+  security-scan -> browser-qa
   |
   v
 Phase 5: Ship (fully autonomous)
-  [shipping]
+  shipping
 ```
 
-Skills in `[brackets]` are later-version additions. As of v0.3 the
-plugin ships with the full Discovery and Design phases plus the Build
-loop. Verify and Ship are scheduled for v0.4.
+As of v0.4 the plugin ships with the full Discovery, Design, Build,
+Verify, and Ship phases. Worktree management is available as a
+cross-cutting skill. v0.5 will add systematic-debugging, learnings,
+and Heartbeat board.jsonl integration.
 
 ## Gates
 
@@ -134,12 +135,13 @@ When the plugin stops autonomous operation, it does so by:
 There is no "try harder" loop — if the plugin can't make progress
 after one retry, it surfaces the problem rather than spinning.
 
-## Known omissions (scheduled for later versions)
+## Known omissions (scheduled for v0.5)
 
-- No automated security-scan — reviewers catch most security concerns
-  in the quality review stage; a dedicated skill comes in v0.4.
-- No browser-qa — manually open the app in a browser after Build; the
-  Playwright-driven QA skill comes in v0.4.
-- No shipping skill — final PR creation and docs generation are
-  manual; a skill automating this comes in v0.4.
-- No systematic-debugging / learnings / Heartbeat integration — v0.5.
+- No systematic-debugging skill — when something breaks mid-build,
+  the agent currently escalates rather than working through a
+  structured 4-phase debug cycle.
+- No learnings skill — session-to-session memory of what worked and
+  what didn't is not captured.
+- No Heartbeat board.jsonl integration — task handoffs between
+  subagents remain in-process rather than persisted as an
+  inspectable queue.

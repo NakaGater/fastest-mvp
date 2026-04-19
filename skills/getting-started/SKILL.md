@@ -70,11 +70,11 @@ Phase 3 - Build (fully autonomous)
     -> commit after each reviewed task
 
 Phase 4 - Verify (fully autonomous)
-    -> security-scan             [v0.4+]
-    -> browser-qa                [v0.4+]
+    -> security-scan
+    -> browser-qa
 
 Phase 5 - Ship (fully autonomous)
-    -> shipping                  [v0.4+]
+    -> shipping
 ```
 
 Skills marked `[vX.Y+]` ship in later versions. If a skill is missing,

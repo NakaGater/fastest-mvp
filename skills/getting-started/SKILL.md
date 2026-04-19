@@ -58,10 +58,10 @@ Phase 2 - Design (mostly autonomous)
     -> search-first              [v0.3+]
     -> tech-selection            [v0.3+, GATE 2 for engineers]
     -> architecture-design       [v0.3+]
-    -> design-system             [v0.2+]
+    -> design-system
     -> planning
-    -> gan-design                [v0.2+]
-    -> design-playground         [v0.2+]
+    -> gan-design
+    -> design-playground
     -> [GATE 3: human approves design]
 
 Phase 3 - Build (fully autonomous)

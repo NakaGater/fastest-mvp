@@ -32,9 +32,10 @@ Phase 5: Ship (fully autonomous)
   [shipping]
 ```
 
-Skills in `[brackets]` are later-version additions. The v0.1 MVP ships
-with: getting-started, discovery-dialogue, prd-generation, planning,
-subagent-development, tdd, progress-dashboard.
+Skills in `[brackets]` are later-version additions. As of v0.2 the
+plugin ships with: getting-started, discovery-dialogue, prd-generation,
+planning, subagent-development, tdd, progress-dashboard, design-system,
+gan-design, design-playground.
 
 ## Gates
 
@@ -134,15 +135,16 @@ When the plugin stops autonomous operation, it does so by:
 There is no "try harder" loop — if the plugin can't make progress
 after one retry, it surfaces the problem rather than spinning.
 
-## v0.1 MVP limits (known omissions)
+## Known omissions (scheduled for later versions)
 
 - No search-first / tech-selection — design proceeds with whatever the
   user specifies in the PRD's technical constraints section.
-- No GAN-design / design-playground — UI implementation proceeds
-  directly from the PRD's description.
+- No architecture-design — structure derived from PRD + plan directly.
 - No automated security-scan / browser-qa — reviewers catch most of
   this in the quality review stage.
 - No shipping skill — final PR creation is manual.
 
 Each of these is scheduled for a later version per the plan in the
-design document.
+design document. v0.2 added the Design Quality skills
+(`design-system`, `gan-design`, `design-playground`) which produce
+visual mocks and Gate 3 approval before Build begins.

@@ -1,0 +1,21 @@
+{
+  "name": "fastest-mvp",
+  "owner": {
+    "name": "NakaGater"
+  },
+  "plugins": [
+    {
+      "name": "fastest-mvp",
+      "source": "./",
+      "description": "Autonomous web-app development plugin: idea -> PRD -> design -> implementation -> tested PR.",
+      "version": "0.1.0",
+      "category": "development",
+      "tags": [
+        "web-app",
+        "mvp",
+        "autonomous",
+        "tdd"
+      ]
+    }
+  ]
+}

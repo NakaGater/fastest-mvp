@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "type": "command",
+        "bash": "node ${COPILOT_PLUGIN_ROOT}/scripts/bootstrap.js",
+        "timeoutSec": 10
+      }
+    ],
+    "postToolUse": [
+      {
+        "type": "command",
+        "bash": "node ${COPILOT_PLUGIN_ROOT}/scripts/record-event.js tool-use",
+        "timeoutSec": 10
+      }
+    ],
+    "subagentStop": [
+      {
+        "type": "command",
+        "bash": "node ${COPILOT_PLUGIN_ROOT}/scripts/record-event.js task-complete",
+        "timeoutSec": 10
+      }
+    ],
+    "sessionEnd": [
+      {
+        "type": "command",
+        "bash": "node ${COPILOT_PLUGIN_ROOT}/scripts/record-event.js turn-complete && node ${COPILOT_PLUGIN_ROOT}/skills/progress-dashboard/scripts/generate-dashboard.js",
+        "timeoutSec": 30
+      }
+    ]
+  }
+}

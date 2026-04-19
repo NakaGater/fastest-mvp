@@ -31,15 +31,60 @@ lets each subagent work in a focused, isolated context.
   context)
 - `docs/design-system.md` or approved playground HTML (for UI tasks)
 
+## Task state — board.jsonl (v0.5+)
+
+Task state lives in `.board/board.jsonl` — an append-only event log
+managed by `scripts/board.js`. TodoWrite is a convenience layer for
+the current turn; the board is the source of truth across turns,
+resumptions, and parallel worktrees.
+
+On first entry (or when the plan changes), seed the board:
+
+```bash
+node ${CLAUDE_PLUGIN_ROOT}/skills/subagent-development/scripts/board.js init --from docs/plan.md
+```
+
+For every dispatch: ask the board for the next actionable task:
+
+```bash
+node scripts/board.js next
+```
+
+Claim before dispatching (prevents double-claim in parallel
+scenarios):
+
+```bash
+node scripts/board.js claim T4 --agent implementer
+```
+
+Complete after commits:
+
+```bash
+node scripts/board.js complete T4 --status DONE --sha abc1234
+```
+
+On block / escalation:
+
+```bash
+node scripts/board.js block T4 --reason "needs decision from human about X"
+```
+
+The board replays its events each call, so state is consistent even
+across separate processes. No locking needed — append is atomic on
+POSIX line length limits.
+
 ## Dispatch loop
 
 Pseudocode:
 
 ```
-tasks = parse(docs/plan.md)
-for task in tasks in dependency order:
-    todo.add(task)
-    todo.mark(task, in_progress)
+board.init(from="docs/plan.md")
+while True:
+    task = board.next()
+    if task is None: break
+
+    board.claim(task.id, agent="implementer")
+    todo.add(task); todo.mark(task, in_progress)
 
     loop up to 3 times:
         result = dispatch(implementer, task)
@@ -64,6 +109,7 @@ for task in tasks in dependency order:
         redispatch implementer with quality_result.findings
 
     commit(f"[build] {task.commit_message}")
+    board.complete(task.id, status="DONE", sha=current_sha())
     todo.mark(task, completed)
 ```
 

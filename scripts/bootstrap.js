@@ -57,6 +57,30 @@ function ensureDashboardDir(root) {
   }
 }
 
+function loadLearnings(root) {
+  // Best-effort: if the learnings script is missing or fails, we
+  // return an empty string rather than blocking the session.
+  const script = path.join(
+    root,
+    'skills',
+    'learnings',
+    'scripts',
+    'load-learnings.js',
+  );
+  if (!fs.existsSync(script)) return '';
+  try {
+    const { execFileSync } = require('child_process');
+    const out = execFileSync(
+      process.execPath,
+      [script, '--limit', '5', '--format', 'context'],
+      { stdio: ['ignore', 'pipe', 'ignore'], timeout: 5000 },
+    );
+    return out.toString().trim();
+  } catch (_) {
+    return '';
+  }
+}
+
 function main() {
   const root = pluginRoot();
   const platform = detectPlatform();
@@ -78,6 +102,11 @@ function main() {
     if (mapping) {
       content += '\n\n---\n\n' + mapping;
     }
+  }
+
+  const learnings = loadLearnings(root);
+  if (learnings) {
+    content += '\n\n---\n\n' + learnings;
   }
 
   ensureDashboardDir(root);

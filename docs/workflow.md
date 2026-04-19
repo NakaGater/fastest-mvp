@@ -135,13 +135,35 @@ When the plugin stops autonomous operation, it does so by:
 There is no "try harder" loop — if the plugin can't make progress
 after one retry, it surfaces the problem rather than spinning.
 
-## Known omissions (scheduled for v0.5)
+## Cross-cutting skills (v0.5)
 
-- No systematic-debugging skill — when something breaks mid-build,
-  the agent currently escalates rather than working through a
-  structured 4-phase debug cycle.
-- No learnings skill — session-to-session memory of what worked and
-  what didn't is not captured.
-- No Heartbeat board.jsonl integration — task handoffs between
-  subagents remain in-process rather than persisted as an
-  inspectable queue.
+Three skills are not tied to a phase — they're available any time:
+
+- **systematic-debugging** — 4-phase cycle (Reproduce -> Localize ->
+  Understand -> Fix) for anything that fails mid-build. Debug notes
+  land in `.debug/{slug}/` for audit.
+- **learnings** — records short, tagged notes at the end of notable
+  sessions. Bootstrap automatically loads the top 5 project-relevant
+  learnings on each session start so the agent inherits prior
+  sessions' lessons.
+- **using-git-worktrees** — when parallel work or isolated
+  long-running processes are needed.
+
+## Task persistence — board.jsonl (v0.5)
+
+`subagent-development` uses `.board/board.jsonl` as the source of
+truth for task state. TodoWrite is a per-turn convenience; the board
+survives resumptions, worktrees, and subagent handoffs. Every state
+transition (claim, complete, block, note) is an appended event, so
+the board doubles as a full audit trail. CLI:
+
+```
+node skills/subagent-development/scripts/board.js init --from docs/plan.md
+node skills/subagent-development/scripts/board.js next
+node skills/subagent-development/scripts/board.js stats
+```
+
+## Scope complete at v0.5
+
+With v0.5, the plugin specification from the design doc is
+implemented end-to-end. Future work (v0.6+) is the user's domain.

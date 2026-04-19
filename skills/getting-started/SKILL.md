@@ -44,6 +44,18 @@ the conversation.
    auto-chaining rules. Execute only the prompt you were given. The
    orchestrator above you is responsible for skill chaining.
 
+## Cross-cutting skills (usable in any phase)
+
+- `systematic-debugging` — when a test / QA / build unexpectedly
+  fails, run the 4-phase cycle (Reproduce -> Localize -> Understand
+  -> Fix) instead of guessing. Mandatory before any destructive
+  git operation.
+- `learnings` — at the end of notable sessions, capture what was
+  learned. Already-recorded learnings are loaded automatically at
+  session start (see "Prior learnings" in this context, if any).
+- `using-git-worktrees` — for parallel subagent work or long-running
+  processes needing isolation.
+
 ## Phase chain (auto-invocation order)
 
 ```

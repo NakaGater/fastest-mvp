@@ -58,9 +58,10 @@ engineering blog's harness design guidance.
 
 | Setting | Default | Purpose |
 |---|---|---|
-| `PASS_THRESHOLD` | 32 / 40 | Minimum score to proceed |
-| `MAX_ITERATIONS` | 10 | Hard cap to prevent infinite loops |
-| `MIN_ITERATIONS` | 3 | Don't accept the first try even if it scores high |
+| `PASS_THRESHOLD` | 36 / 40 | Minimum score to proceed (90%) |
+| `AXIS_MINIMUM` | 8 / 10 | Any axis below this = automatic FAIL regardless of total |
+| `MAX_ITERATIONS` | 15 | Hard cap to prevent infinite loops |
+| `MIN_ITERATIONS` | 5 | Don't accept early — force at least 5 rounds of refinement |
 | `VIEWPORTS` | desktop 1440, mobile 375 | Screenshot sizes |
 
 Override via the orchestrator's invocation prompt if needed.
@@ -93,6 +94,8 @@ for iter in 1..MAX_ITERATIONS:
     record event: gan-iteration, iteration=iter, score=total
 
     if iter >= MIN_ITERATIONS and total >= PASS_THRESHOLD:
+        if any axis < AXIS_MINIMUM:
+            continue   # individual axis too weak, keep iterating
         copy iter-{iter} -> docs/design/approved/
         commit: "[design] feat: add approved UI design (GAN iter {iter}/{MAX})"
         return approved_path

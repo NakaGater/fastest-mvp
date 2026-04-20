@@ -58,36 +58,88 @@ the conversation.
 
 ## Phase chain (auto-invocation order)
 
-```
-Phase 1 - Discovery (human-driven)
-  discovery-dialogue
-    -> ceo-challenge
-    -> user-story-generation
-    -> prd-generation
-    -> [GATE 1: human approves PRD]
+**Every step below is MANDATORY. Do NOT skip any step.**
 
-Phase 2 - Design (mostly autonomous)
-    -> search-first
-    -> tech-selection            [GATE 2 for engineers]
-    -> architecture-design
-    -> design-system
-    -> planning
-    -> gan-design
-    -> design-playground
-    -> [GATE 3: human approves design]
+### Phase 1 — Discovery (human-driven)
 
-Phase 3 - Build (fully autonomous)
-    -> subagent-development (per task)
-         uses tdd
-    -> commit after each reviewed task
+| Step | Skill | Required output | Skip? |
+|------|-------|-----------------|-------|
+| 1.1 | `discovery-dialogue` | `docs/discovery-notes.md` | NO |
+| 1.2 | `ceo-challenge` | `docs/scope-decisions.md` | NO |
+| 1.3 | `user-story-generation` | `docs/user-stories.md` | NO |
+| 1.4 | `prd-generation` | `docs/prd.md` | NO |
 
-Phase 4 - Verify (fully autonomous)
-    -> security-scan
-    -> browser-qa
+**★ GATE 1: Human approves PRD. Do not proceed without approval.**
 
-Phase 5 - Ship (fully autonomous)
-    -> shipping
-```
+### Phase 2 — Design (mostly autonomous, ALL 7 steps required)
+
+| Step | Skill | Required output | Skip? |
+|------|-------|-----------------|-------|
+| 2.1 | `search-first` | `docs/search-first.md` | NO |
+| 2.2 | `tech-selection` | `docs/tech-selection.md` | NO |
+| 2.3 | `architecture-design` | `docs/architecture.md` + `docs/adr/*.md` | NO |
+| 2.4 | `design-system` | `docs/design-system.md` + `docs/design/tokens-preview.html` | NO |
+| 2.5 | `planning` | `docs/plan.md` | NO |
+| 2.6 | `gan-design` | `docs/design/approved/` (non-empty) | NO |
+| 2.7 | `design-playground` | Gate 3 approved | NO |
+
+**★ GATE 2: Tech stack (engineers only, after step 2.2).**
+**★ GATE 3: Human approves design (after step 2.7). Do not start Build without this.**
+
+Execute steps 2.1 through 2.7 **IN ORDER**. Each step's Completion
+section names the next skill explicitly. If a step's output file
+already exists from a prior session, read it and proceed to the next
+step — but never skip a step whose output is missing.
+
+### Phase 3 — Build (fully autonomous)
+
+| Step | Skill | Required output | Skip? |
+|------|-------|-----------------|-------|
+| 3.1 | `subagent-development` | Source code, tests, commits | NO |
+
+Uses `tdd` skill internally. Commits after each reviewed task.
+
+### Phase 4 — Verify (fully autonomous)
+
+| Step | Skill | Required output | Skip? |
+|------|-------|-----------------|-------|
+| 4.1 | `security-scan` | `docs/security-report.md` | NO |
+| 4.2 | `browser-qa` | `docs/qa-report.md` + `tests/e2e/*.spec.ts` | NO |
+
+### Phase 5 — Ship (fully autonomous)
+
+| Step | Skill | Required output | Skip? |
+|------|-------|-----------------|-------|
+| 5.1 | `shipping` | GitHub PR | NO |
+
+## Phase transition checklists
+
+Before crossing a phase boundary, verify all required outputs exist.
+
+### Design → Build transition checklist
+
+Before ANY Phase 3 work, verify ALL of these:
+
+- [ ] `docs/search-first.md` exists
+- [ ] `docs/tech-selection.md` exists
+- [ ] `docs/architecture.md` exists
+- [ ] `docs/design-system.md` exists
+- [ ] `docs/plan.md` exists
+- [ ] `docs/design/approved/` exists and is non-empty
+- [ ] Gate 3 (design) recorded in `.dashboard/events.jsonl`
+
+If ANY item is missing, return to the earliest missing step in
+Phase 2. Do NOT start Phase 3 with an incomplete Design phase.
+
+### Build → Verify transition checklist
+
+- [ ] All tasks in `docs/plan.md` are DONE or DONE_WITH_CONCERNS
+- [ ] `docs/build-summary.md` exists
+
+### Verify → Ship transition checklist
+
+- [ ] `docs/security-report.md` exists with 0 critical findings
+- [ ] `docs/qa-report.md` exists with 0 critical failures
 
 Skills marked `[vX.Y+]` ship in later versions. If a skill is missing,
 continue with the available ones and note the omission in the progress

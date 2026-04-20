@@ -155,7 +155,9 @@ deny-list.
    [design] feat: add design system tokens and conventions
    ```
 
-3. The meta-skill chain advances to `planning` -> `gan-design`.
+3. **Next skill: `planning`.** Invoke `planning` now. After `planning`
+   completes, `gan-design` and `design-playground` still remain — do
+   NOT skip them.
 
 ## Anti-patterns
 

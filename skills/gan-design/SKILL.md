@@ -165,7 +165,9 @@ When a passing design is produced:
    [design] feat: add approved UI design (GAN iter {N}/{MAX})
    ```
 
-4. The meta-skill chain advances to `design-playground`.
+4. **Next skill: `design-playground`** (Gate 3). Invoke
+   `design-playground` now. Do NOT skip to Phase 3 (Build). The human
+   must approve the design before implementation begins.
 
 ## References
 

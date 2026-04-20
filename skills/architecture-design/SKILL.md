@@ -225,7 +225,8 @@ Avoid cramming more than 8-10 nodes per diagram. Split if larger.
    [design] docs: add architecture and {N} ADRs
    ```
 
-3. Meta-skill chain advances to `design-system` -> `planning`.
+3. **Next skill: `design-system`.** Invoke `design-system` now. Do NOT
+   skip ahead to `planning` or any later skill.
 
 ## Escalation
 

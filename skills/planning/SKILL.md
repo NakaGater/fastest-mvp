@@ -107,8 +107,10 @@ were a test assertion. This becomes the RED step in TDD.}
    ```
 
 3. Emit a `plan-ready` event so the dashboard reflects task count.
-4. The meta-skill chain will now invoke `gan-design` (v0.2+) or, if
-   unavailable, proceed to `subagent-development`.
+4. **Next skill: `gan-design`.** Do NOT skip this step or proceed
+   directly to `subagent-development`. The GAN design loop and
+   subsequent `design-playground` (Gate 3) must complete before
+   Build begins.
 
 ## Common mistakes
 

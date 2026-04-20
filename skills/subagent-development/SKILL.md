@@ -24,6 +24,25 @@ The orchestrator NEVER writes implementation code itself. Its entire
 job is dispatch and coordination. This keeps your context clean and
 lets each subagent work in a focused, isolated context.
 
+## Pre-flight check (MUST run before dispatching any task)
+
+Before starting the dispatch loop, verify that Phase 2 completed
+fully. Check for the following artifacts:
+
+1. `docs/design-system.md` exists — if missing, invoke `design-system`.
+2. `docs/design/approved/` directory exists and contains at least one
+   HTML file — if missing, invoke `gan-design` then
+   `design-playground`.
+3. Gate 3 (design) was approved — check `.dashboard/events.jsonl` for
+   a `gate-approved` event with `gate: design`.
+
+If ANY check fails, do NOT proceed with the dispatch loop. Instead:
+
+> Phase 2 incomplete: {missing artifact}. Returning to the Design
+> phase to complete the missing step(s).
+
+Resume from the earliest missing skill in Phase 2.
+
 ## Inputs
 
 - `docs/plan.md` (required)

@@ -56,6 +56,12 @@ Execute only this prompt.
 - [ ] No `expect(true).toBe(true)` style no-op tests.
 - [ ] Test names describe behavior ("returns 404 when user missing"),
       not mechanism ("test_user_repo_get").
+- [ ] **No A6 violation (skipped RED):** `RED_EVIDENCE` in the
+      implementer's report confirms tests were written BEFORE
+      implementation. If the test's assertions literally mirror the
+      code's branches (A1: retroactive tests), flag it.
+- [ ] **No A1 violation (retroactive tests):** Tests describe behavior
+      from the caller's perspective, not the code's internal structure.
 
 ## Report schema
 

@@ -44,6 +44,11 @@ Answer each question with a one-line justification:
 - [ ] No spec behaviors were silently omitted.
 - [ ] No behaviors outside the spec were added (scope creep).
 - [ ] The commit message phase-prefix matches `[build]`.
+- [ ] **TDD compliance: `RED_EVIDENCE` is present and valid** — the
+      implementer's report includes a test file path, failing command,
+      and failure output proving tests were written before implementation.
+      If `RED_EVIDENCE` is missing or contains only a skip justification
+      for a behavioral change, this check FAILS.
 
 ## Report schema
 
@@ -56,6 +61,7 @@ REVIEW:
 - No silent omissions: {yes|no} — {detail}
 - No scope creep: {yes|no} — {detail}
 - Commit message format: {yes|no}
+- TDD compliance (RED_EVIDENCE): {yes|no} — {detail}
 
 FINDINGS (only if FAIL):
 - {specific issue with file:line reference}

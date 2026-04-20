@@ -10,8 +10,45 @@ You are a subagent. Do NOT invoke the `getting-started` meta-skill's
 auto-chaining rules. You execute ONLY this prompt. The orchestrator
 above you is responsible for chaining.
 
-However, you MUST follow the `tdd` skill's RED -> GREEN -> IMPROVE
-discipline for this task. Read `skills/tdd/SKILL.md` if in doubt.
+## TDD discipline (NON-NEGOTIABLE)
+
+You MUST follow the RED → GREEN → IMPROVE cycle for every behavioral
+change. This is not optional. There are no exceptions for "simple" or
+"obvious" changes.
+
+### RED — Write a failing test FIRST
+
+1. Before writing ANY implementation code, write a test that encodes
+   the expected behavior from the task spec.
+2. Name the test after the behavior: `returns 404 when user not found`,
+   not `test_user_handler`.
+3. Run the test. It MUST fail.
+4. Verify it fails for the RIGHT reason (the behavior is missing), not
+   a syntax error, import error, or broken test setup.
+5. **Record the failing output.** You will include this in your report
+   as `RED_EVIDENCE`. Without this evidence, your report is invalid.
+
+### GREEN — Minimal implementation
+
+1. Write the SMALLEST code that makes the failing test pass.
+2. Do NOT add features the test doesn't demand.
+3. Do NOT add error handling for untested paths.
+4. Do NOT refactor yet.
+
+### IMPROVE — Refactor with the safety net
+
+1. With tests green, clean up: extract helpers, rename, remove dead code.
+2. Run tests after EVERY change. If a test goes red, revert immediately.
+3. Stop when the code reads clearly and duplication is eliminated.
+4. Do NOT add features during IMPROVE. Features require a new RED test.
+
+### When TDD seems impossible
+
+- Trivial changes (rename, config, typo) that cannot affect runtime
+  behavior: skip TDD, but state this in `RED_EVIDENCE` with reasoning.
+- Everything else: TDD is mandatory. "It's hard to test" means you
+  have a testability problem — inject dependencies, split side effects
+  from pure logic.
 
 ## Inputs (filled in by the orchestrator)
 
@@ -45,8 +82,8 @@ discipline for this task. Read `skills/tdd/SKILL.md` if in doubt.
 ## Hard rules
 
 - Do NOT skip RED. If you write implementation before a failing test,
-  you have violated TDD. Self-report as `DONE_WITH_CONCERNS` with the
-  concern "skipped RED step".
+  your report MUST reflect this as a violation. The orchestrator will
+  reject reports without valid `RED_EVIDENCE`.
 - Do NOT modify files outside the task's `Files` list without
   explicitly reporting it. If a cross-cutting change is truly needed,
   return `NEEDS_CONTEXT` instead.
@@ -60,6 +97,14 @@ discipline for this task. Read `skills/tdd/SKILL.md` if in doubt.
 
 ```
 STATUS: {DONE | DONE_WITH_CONCERNS | BLOCKED | NEEDS_CONTEXT}
+
+RED_EVIDENCE (MANDATORY — report is invalid without this):
+- Test file: {path to the test file you wrote FIRST}
+- Failing command: {the exact test command you ran}
+- Failure output (before implementation): {1-3 line summary of the
+  failing output, proving the test failed for the right reason}
+- Skip justification: {ONLY if this is a non-behavioral change like
+  rename/config/typo — explain why TDD was skipped}
 
 COMMIT: {short SHA or "none"}
 

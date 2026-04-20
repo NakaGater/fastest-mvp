@@ -119,6 +119,19 @@ while True:
         escalate to human
         continue
 
+    # --- TDD verification gate (MANDATORY) ---
+    if result.RED_EVIDENCE is missing or empty:
+        redispatch implementer with message:
+            "Report rejected: RED_EVIDENCE is missing. You MUST
+             write a failing test FIRST, run it, record the failing
+             output, then implement. Resubmit with valid RED_EVIDENCE."
+        tdd_retry_count += 1
+        if tdd_retry_count >= 2:
+            log "TDD compliance failure after 2 attempts"
+            mark as DONE_WITH_CONCERNS
+            # proceed to reviewers anyway — they will also check
+    # --- end TDD gate ---
+
     spec_result = dispatch(spec-reviewer, task, implementer_output)
     if spec_result.status != PASS:
         redispatch implementer with spec_result.findings

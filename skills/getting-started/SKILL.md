@@ -97,7 +97,11 @@ step — but never skip a step whose output is missing.
 |------|-------|-----------------|-------|
 | 3.1 | `subagent-development` | Source code, tests, commits | NO |
 
-Uses `tdd` skill internally. Commits after each reviewed task.
+Uses `tdd` skill internally. **Every implementation task MUST follow
+RED → GREEN → IMPROVE.** The implementer subagent is required to
+provide `RED_EVIDENCE` (proof of failing test before implementation)
+in every report. Both reviewers verify TDD compliance. Reports without
+valid `RED_EVIDENCE` are rejected and redispatched.
 
 ### Phase 4 — Verify (fully autonomous)
 

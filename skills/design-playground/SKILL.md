@@ -27,6 +27,19 @@ a diff-only prompt output keeps the loop tight.
 - `docs/design/playground-state.json` — last saved adjustment state
   (optional; only if the user hits "Save")
 
+## Interaction modes
+
+The playground offers three modes, toggled from the left-panel toolbar:
+
+| Mode | Purpose | Controls |
+|------|---------|----------|
+| **Adjust** (default) | Tune CSS design tokens | Sliders, color-pickers, dropdowns, presets |
+| **Edit** | Change text content in-place | Click any text element in preview to edit |
+| **Annotate** | Mark areas and attach feedback | Drag to draw a rectangle, then type a note |
+
+All three modes' changes accumulate and appear together in the
+prompt-output panel on the right.
+
 ## Behavior
 
 1. Read the approved design's HTML + CSS.
@@ -47,29 +60,80 @@ a diff-only prompt output keeps the loop tight.
    playground HTML so it opens in the user's default browser.
 6. Tell the user:
 
-   > Playground open at `docs/design/playground.html`. Adjust tokens
-   > with the left panel. When you like what you see, click
-   > **"Copy prompt"** on the right panel and paste it back here. Or
-   > type **"approve"** if the defaults are fine.
+   > Playground open at `docs/design/playground.html`.
+   >
+   > - **Adjust** (default): tune tokens with sliders on the left.
+   > - **Edit**: click any text in the preview to rewrite it.
+   > - **Annotate**: draw a rectangle on the preview and type feedback.
+   >
+   > When done, click **"Copy prompt"** and paste it here, or type
+   > **"approve"** if the design is ready.
 
 7. Wait for either:
-   - A pasted prompt (token deltas) — apply to the source CSS, save
-     as a new iteration under `docs/design/playground-v{N}/`, and ask
-     again whether to approve.
+   - A pasted prompt (token deltas + text changes + annotations) —
+     apply changes to the source files, save as a new iteration
+     under `docs/design/playground-v{N}/`, and ask again whether to
+     approve.
    - "approve" — copy current state to `docs/design/approved/`,
      record the gate approval, and proceed.
+
+### Text editing behavior
+
+When the user activates Edit mode:
+
+1. The parent JS sets `contentEditable="true"` on all text-containing
+   elements inside the iframe (h1-h6, p, span, li, a, button, label).
+   This works because `sandbox="allow-same-origin"` permits parent
+   DOM access.
+2. Editable elements show a subtle dashed border on hover/focus.
+3. On each change, the parent captures `{selector, originalText,
+   newText}` and stores it in a `textChanges[]` array.
+4. The left panel shows a list of text changes with per-item "Revert"
+   buttons.
+5. If `contentEditable` fails in the sandbox, fall back to a popup
+   text-input positioned near the clicked element (rendered in the
+   parent, not the iframe).
+
+### Annotation behavior
+
+When the user activates Annotate mode:
+
+1. A transparent SVG overlay appears on top of the iframe
+   (`pointer-events: auto`; in other modes it is `none`).
+2. The user draws a rectangle via click-drag (mousedown → mousemove →
+   mouseup).
+3. On mouseup a small popup appears near the rectangle with a textarea
+   for the note and a "Save" button.
+4. The annotation is stored as `{id, x%, y%, w%, h%, note,
+   elementHint}`:
+   - Coordinates use percentages for viewport independence.
+   - `elementHint` is auto-detected via
+     `iframe.contentDocument.elementFromPoint()` at the rectangle's
+     center (e.g., `section.hero`, `nav.main-nav`).
+5. Saved annotations render as semi-transparent blue rectangles with
+   numbered labels on the SVG overlay.
+6. The left panel shows an annotation list: number, note preview,
+   click-to-highlight, and a delete button.
 
 ## The 3-panel layout (see template reference)
 
 ```
 +--------------+-----------------------+------------------+
-|              |                       |                  |
-|  Controls    |   Live preview        |  Prompt output   |
-|              |                       |                  |
-|  Tokens      |   Rendered app        |  Only the deltas |
-|  Presets     |   (iframe / srcdoc)   |  from defaults   |
-|  Components  |                       |                  |
-|              |                       |  [Copy]          |
+| Mode toolbar |                       |                  |
+| [Adjust]     |   SVG annotation      |  Prompt output   |
+| [Edit]       |   overlay (top layer) |                  |
+| [Annotate]   |                       |  Tokens:         |
+|              |   Live preview        |  Text changes:   |
+| Adjust mode: |   (iframe / srcdoc)   |  Annotations:    |
+|  Tokens      |                       |                  |
+|  Presets      |   Rendered app        |  [Copy]          |
+|  Components  |                       |  [Approve]       |
+|              +-----------------------+                  |
+| Edit mode:   |  Viewport: [D][T][M]  |  Rationale box   |
+|  Change list |  [Reset]              |                  |
+|              +-----------------------+                  |
+| Annotate:    |                       |                  |
+|  Note list   |                       |                  |
 +--------------+-----------------------+------------------+
 ```
 
@@ -83,9 +147,10 @@ Constraints:
 
 ## Prompt output format
 
-When the user changes `--color-accent` from `#4c9aff` to `#2d7fe8`
-and font from default to "IBM Plex Sans", the prompt output panel
-shows:
+The right panel auto-generates a prompt containing ALL accumulated
+changes across the three modes. Only non-default values appear.
+
+### Example
 
 ```
 Please apply the following design adjustments:
@@ -94,16 +159,26 @@ Tokens:
   --color-accent: #4c9aff -> #2d7fe8
   --font-sans: "Geist Sans" stack -> "IBM Plex Sans" stack
 
-Rationale (user): "saturated blue competes with body text"
+Text changes:
+  [1] .hero h1: "Welcome to App" → "Welcome to MyApp"
+  [2] .cta-button: "Get Started" → "無料で始める"
 
-Keep all other tokens as-is. Do not re-run the GAN loop — apply only
-these deltas to docs/design/approved/styles.css, re-run the
-design-system token preview, and regenerate the playground so I can
-review again.
+Annotations:
+  [1] Area: nav.main-nav (top navigation)
+      → "ロゴをもう少し大きくして左に余白を追加"
+  [2] Area: section.hero (hero section, center)
+      → "背景をもっと暗くしてテキストの視認性を上げる"
+
+Rationale (user): "日本語対応とブランド調整"
+
+Keep all other tokens and content as-is unless noted above.
+Apply annotations as structural/visual changes to the relevant
+components. If an annotation requires layout changes, update the
+HTML structure accordingly.
 ```
 
 The "Rationale (user)" line appears only if the user typed one into
-an optional textbox.
+the optional textbox. Sections with no changes are omitted.
 
 ## Preset behavior
 
@@ -146,16 +221,20 @@ repeat until user types "approve"
 
 ## Escalation
 
-If the user asks for a change that would require a non-token edit
-(e.g., "move the hero image below the fold", "make the nav
-horizontal") — that's a structural change that the GAN loop should
-handle, not the Playground. Respond:
+**Minor structural changes** (move an element, resize a section, add
+a divider) can now be expressed via annotations. The agent applies
+them directly without returning to the GAN loop.
 
-> That change is structural, not a token tweak. Should I return to
+**Major structural changes** (redesign the entire page layout, add a
+new page, fundamentally change the navigation pattern) still require
+the GAN loop. Respond:
+
+> That change requires a major structural redesign. Should I return to
 > gan-design with this feedback for another iteration? (y/n)
 
-On yes, append the feedback to `docs/design/approved/human-feedback.md`
-and re-invoke `gan-design` with `MIN_ITERATIONS=1, MAX_ITERATIONS=3`.
+On yes, append the feedback (including any annotations) to
+`docs/design/approved/human-feedback.md` and re-invoke `gan-design`
+with `MIN_ITERATIONS=1, MAX_ITERATIONS=3`.
 
 ## Completion
 

@@ -8,6 +8,13 @@
         "timeoutSec": 10
       }
     ],
+    "preToolUse": [
+      {
+        "type": "command",
+        "bash": "node ${COPILOT_PLUGIN_ROOT}/scripts/tdd-gate.js",
+        "timeoutSec": 5
+      }
+    ],
     "postToolUse": [
       {
         "type": "command",

@@ -81,6 +81,29 @@ function loadLearnings(root) {
   }
 }
 
+function loadTddRules(root) {
+  // Compact TDD rules injected at session start. This ensures TDD
+  // discipline is always in context, not just when the implementer
+  // reads the skill file.
+  return [
+    '## TDD Core Rules (always active)',
+    '',
+    'Every behavioral code change MUST follow RED → GREEN → IMPROVE:',
+    '1. **RED**: Write a failing test FIRST. Run it. Confirm it fails',
+    '   for the right reason (behavior missing, not syntax error).',
+    '2. **GREEN**: Write the smallest code to make the test pass.',
+    '3. **IMPROVE**: Refactor with tests green. No new features here.',
+    '',
+    'The implementer subagent MUST provide `RED_EVIDENCE` in every',
+    'report: test file path, failing command, and failure output.',
+    'Reports without valid RED_EVIDENCE are rejected by the orchestrator',
+    'and both reviewers.',
+    '',
+    'Exceptions: non-behavioral changes (rename, config, docs) may skip',
+    'TDD but must justify in RED_EVIDENCE.',
+  ].join('\n');
+}
+
 function main() {
   const root = pluginRoot();
   const platform = detectPlatform();
@@ -89,6 +112,13 @@ function main() {
   );
 
   let content = metaSkill;
+
+  // Inject TDD rules
+  const tddRules = loadTddRules(root);
+  if (tddRules) {
+    content += '\n\n---\n\n' + tddRules;
+  }
+
   if (platform === 'copilot') {
     const mapping = readIfExists(
       path.join(
